@@ -24,8 +24,23 @@ type wordList struct {
 	row1, row2, row3 map[int][]string
 }
 
+// describes the structure of the data
+type desc struct {
+	length, height int
+	letter         string
+}
+
+// given a letter, convert this to grab rows based on the position of the
+// letters
+func (d desc) sliceMap() {
+	l := []byte(d.letter)
+	fmt.Println(l)
+}
+
 func cypher(r string) {
-	//ascii := []byte(r)
+	ascii := []byte(r)
+	fmt.Println(ascii[0] - 1)
+	fmt.Printf("ref = %T\n", ascii)
 
 	//asciiShift := ascii - shift
 
