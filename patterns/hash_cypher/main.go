@@ -39,7 +39,9 @@ func (d desc) sliceMap() {
 
 func cypher(r string) {
 	ascii := []byte(r)
-	fmt.Println(ascii[0] - 1)
+	adjusted := ascii[0] - 65
+
+	fmt.Println(adjusted)
 	fmt.Printf("ref = %T\n", ascii)
 
 	//asciiShift := ascii - shift
@@ -50,5 +52,9 @@ func cypher(r string) {
 
 func main() {
 	cypher("E")
-	fmt.Println("vim-go")
+	n := []uint8{2}
+	fmt.Println(n[0])
+	listOfStrings := []string{"one", "two", "three"}
+	fmt.Println(listOfStrings[n[0]])
+	fmt.Printf("type n = %T\n", n[0])
 }
