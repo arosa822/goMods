@@ -2,15 +2,44 @@ package main
 
 import "fmt"
 
+// CC:
+var expected string = "0 0 00 0000 0 000 00 0000 0 00"
+
+//
+type binString struct {
+	asciiVal string //ascii value of strings
+	binCode  []int  //resulting code
+}
+
+type keys struct {
+	keyMap map[int32]int
+}
+
+//convert s (string) to ascii
 func (b *binString) stringToBinary(s string) {
-	b.bin = ""
+	b.asciiVal = ""
 	for _, i := range s {
-		b.bin = fmt.Sprintf("%s%b\n", b.bin, i)
+		b.asciiVal = fmt.Sprintf("%s%b\n", b.asciiVal, i)
 	}
 }
 
-type binString struct {
-	bin string
+// convert to ascii to 0's and 1's based on mapping
+func (b *binString) convertToBinary(k *keys) {
+	for n, j := range b.asciiVal {
+		val, ok := k.keyMap[j]
+		if ok {
+			b.binCode = append(b.binCode, val)
+		}
+	}
+}
+
+// constructor function for keymap
+func newKey() *keys {
+	var k keys
+	k.keyMap = make(map[int32]int)
+	k.keyMap[48] = 0
+	k.keyMap[49] = 1
+	return &k
 }
 
 var b binString
@@ -18,38 +47,22 @@ var b binString
 func main() {
 
 	b.stringToBinary("CC")
+	k := newKey()
+	b.convertToBinary(k)
 
-	decoder := make(map[int32]int)
-	decoder[48] = 0
-	decoder[49] = 1
-	decoder[10] = 9
-	decoded := []int{}
+	fmt.Println(b.binCode)
 
-	// take in int32's and place in list of 0's and 1's
-	for n, j := range b.bin {
-		fmt.Printf("%d: %v %T\n", n, j, j)
-		b, ok := decoder[j]
-		if ok {
-			//store b in string[]
-			decoded = append(decoded, b)
-
-		}
-	}
-
-	fmt.Println(decoded)
-	//var state int = 0
-	//var count int = 0
 	count := []int{}
 	val := []int{}
 	var tempCount int
 
-	for n, j := range decoded {
+	for n, j := range b.binCode {
 
 		if n == 0 {
 			fmt.Println("first iteration")
 			tempCount = 1
-		} else if j != decoded[n-1] && decoded[n-1] != 9 {
-			val = append(val, decoded[n-1])
+		} else if j != b.binCode[n-1] && b.binCode[n-1] != 9 {
+			val = append(val, b.binCode[n-1])
 			count = append(count, tempCount-1)
 
 			tempCount = 1
@@ -74,4 +87,5 @@ func main() {
 		fmt.Print(" ")
 
 	}
+	fmt.Printf("\n Expected: %s", expected)
 }
