@@ -9,6 +9,8 @@ var expected string = "0 0 00 0000 0 000 00 0000 0 00"
 type binString struct {
 	asciiVal string //ascii value of strings
 	binCode  []int  //resulting code
+	binVal   []int
+	bincount []int
 }
 
 type keys struct {
@@ -25,12 +27,18 @@ func (b *binString) stringToBinary(s string) {
 
 // convert to ascii to 0's and 1's based on mapping
 func (b *binString) convertToBinary(k *keys) {
-	for n, j := range b.asciiVal {
+	for _, j := range b.asciiVal {
 		val, ok := k.keyMap[j]
 		if ok {
 			b.binCode = append(b.binCode, val)
 		}
 	}
+}
+
+// scan resulting binCode for unique characters
+func (b *binString) scanUnique() {
+	/// add stuff in here
+
 }
 
 // constructor function for keymap
@@ -40,6 +48,15 @@ func newKey() *keys {
 	k.keyMap[48] = 0
 	k.keyMap[49] = 1
 	return &k
+}
+
+func contains(s []int, e int) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }
 
 var b binString
@@ -61,7 +78,7 @@ func main() {
 		if n == 0 {
 			fmt.Println("first iteration")
 			tempCount = 1
-		} else if j != b.binCode[n-1] && b.binCode[n-1] != 9 {
+		} else if j != b.binCode[n-1] && n != 9 {
 			val = append(val, b.binCode[n-1])
 			count = append(count, tempCount-1)
 
@@ -71,8 +88,24 @@ func main() {
 
 		tempCount++
 	}
+
+	// reverse search for the last element
+	tempCount = 0
+	for n := len(b.binCode) - 1; n > 0; n-- {
+		if n == len(b.binCode)-1 {
+			tempCount = 1
+		} else if n < len(b.binCode)-2 && b.binCode[n] != b.binCode[n+1] {
+			val = append(val, b.binCode[n+1])
+			count = append(count, tempCount-1)
+			break
+		}
+		tempCount++
+
+	}
+
 	fmt.Println(val)
 	fmt.Println(count)
+	fmt.Printf("S:")
 
 	for t := 0; t < len(val); t++ {
 		if val[t] == 0 {
@@ -87,5 +120,5 @@ func main() {
 		fmt.Print(" ")
 
 	}
-	fmt.Printf("\n Expected: %s", expected)
+	fmt.Printf("\nE:%s", expected)
 }
