@@ -10,7 +10,7 @@ type binString struct {
 	asciiVal string //ascii value of strings
 	binCode  []int  //resulting code
 	binVal   []int
-	bincount []int
+	binCount []int
 }
 
 type keys struct {
@@ -21,8 +21,9 @@ type keys struct {
 func (b *binString) stringToBinary(s string) {
 	b.asciiVal = ""
 	for _, i := range s {
-		b.asciiVal = fmt.Sprintf("%s%b\n", b.asciiVal, i)
+		b.asciiVal = fmt.Sprintf("%s%.7b\n", b.asciiVal, i)
 	}
+	fmt.Println(b.asciiVal)
 }
 
 // convert to ascii to 0's and 1's based on mapping
@@ -32,6 +33,7 @@ func (b *binString) convertToBinary(k *keys) {
 		if ok {
 			b.binCode = append(b.binCode, val)
 		}
+		fmt.Println(b.binCode)
 	}
 }
 
@@ -39,6 +41,42 @@ func (b *binString) convertToBinary(k *keys) {
 func (b *binString) scanUnique() {
 	/// add stuff in here
 
+	tempCount := 1
+	for n, j := range b.binCode {
+		if n == 0 {
+			tempCount = 1
+		} else if j != b.binCode[n-1] {
+			b.binVal = append(b.binVal, b.binCode[n-1])
+			b.binCount = append(b.binCount, tempCount-1)
+
+			tempCount = 1
+		}
+		tempCount++
+	}
+
+	tempCount = 0
+	for n := len(b.binCode) - 1; n > 0; n-- {
+		if b.binCode[n] != b.binCode[n-1] {
+			b.binVal = append(b.binVal, b.binCode[n])
+			b.binCount = append(b.binCount, tempCount)
+			break
+		}
+		tempCount++
+	}
+
+}
+
+func (b binString) display() {
+	for t := 0; t < len(b.binVal); t++ {
+		if b.binVal[t] == 0 {
+			fmt.Print(" 00 ")
+		} else {
+			fmt.Print(" 0 ")
+		}
+		for n := 0; n < b.binCount[t]; n++ {
+			fmt.Print("0")
+		}
+	}
 }
 
 // constructor function for keymap
@@ -63,62 +101,18 @@ var b binString
 
 func main() {
 
-	b.stringToBinary("CC")
+	b.stringToBinary("%")
 	k := newKey()
 	b.convertToBinary(k)
 
+	b.scanUnique()
+
 	fmt.Println(b.binCode)
 
-	count := []int{}
-	val := []int{}
-	var tempCount int
-
-	for n, j := range b.binCode {
-
-		if n == 0 {
-			fmt.Println("first iteration")
-			tempCount = 1
-		} else if j != b.binCode[n-1] && n != 9 {
-			val = append(val, b.binCode[n-1])
-			count = append(count, tempCount-1)
-
-			tempCount = 1
-
-		}
-
-		tempCount++
-	}
-
-	// reverse search for the last element
-	tempCount = 0
-	for n := len(b.binCode) - 1; n > 0; n-- {
-		if n == len(b.binCode)-1 {
-			tempCount = 1
-		} else if n < len(b.binCode)-2 && b.binCode[n] != b.binCode[n+1] {
-			val = append(val, b.binCode[n+1])
-			count = append(count, tempCount-1)
-			break
-		}
-		tempCount++
-
-	}
-
-	fmt.Println(val)
-	fmt.Println(count)
-	fmt.Printf("S:")
-
-	for t := 0; t < len(val); t++ {
-		if val[t] == 0 {
-			fmt.Print("00 ")
-		} else {
-			fmt.Print("0 ")
-		}
-
-		for n := 0; n < count[t]; n++ {
-			fmt.Print("0")
-		}
-		fmt.Print(" ")
-
-	}
 	fmt.Printf("\nE:%s", expected)
+
+	fmt.Printf("\nR:")
+	b.display()
+	fmt.Printf("\n%v\n%v\n", b.binVal, b.binCount)
+
 }
