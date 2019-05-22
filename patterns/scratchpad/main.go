@@ -12,8 +12,12 @@ func (b *biteString) convert(s string) {
 	}
 }
 
+var s1 string = "a"
+var s2 string = "b"
+
 func main() {
 	var b biteString
 	b.convert("%")
 	fmt.Println(b.val)
+	fmt.Println(s1 + s2)
 }
