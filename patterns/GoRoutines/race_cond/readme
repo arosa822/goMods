@@ -1,0 +1,3 @@
+This program introduces a race condition intentionally for the purpose 
+of understanding go routines and mutex
+
