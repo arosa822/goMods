@@ -38,32 +38,13 @@ func (r *river) makeRiver() {
 
 }
 
-func compare(n1, n2 river) {
-
-	for {
-		if n1.number > n2.number {
-			n2.makeRiver()
-			n2.number = n2.next
-
-		} else if n1.number < n2.number {
-			n1.makeRiver()
-			n1.next = n1.next
-		}
-
-		if n1.number == n2.number {
-			fmt.Println(n1.number)
-			fmt.Println(n2.number)
-			break
-		}
-
-	}
-}
-
 func main() {
-	var n, m river
-	n.number = 1
-	m.number = 7
-	compare(m, n)
+	var n river
+	n.number = 123
+	n.makeRiver()
+	fmt.Println(n.byteArray)
+	fmt.Println(n.sum)
+	fmt.Println(n.next)
 	/*
 		var intVar = 123
 		var rightMost, tempIntVar int
