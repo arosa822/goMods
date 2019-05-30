@@ -12,6 +12,7 @@ type river struct {
 	number, next int
 	byteArray    []byte
 	sum          byte
+	stream       map[int]int
 }
 
 func (r *river) makeRiver() {
@@ -34,61 +35,54 @@ func (r *river) makeRiver() {
 	for _, j := range r.byteArray {
 		r.sum += j
 	}
+
 	r.next = r.number + int(r.sum)
+	r.sum = 0
+	r.byteArray = nil
 
 }
 
-func compare(n1, n2 river) {
+func (r *river) riverGuide(c chan []int) {
 
-	for {
-		if n1.number > n2.number {
-			n2.makeRiver()
-			n2.number = n2.next
+	var a []int
 
-		} else if n1.number < n2.number {
-			n1.makeRiver()
-			n1.next = n1.next
-		}
+	a = append(a, r.number)
+	for n := 0; n < 100; n++ {
+		r.makeRiver()
+		a = append(a, r.next)
+		r.number = r.next
+	}
+	c <- a
 
-		if n1.number == n2.number {
-			fmt.Println(n1.number)
-			fmt.Println(n2.number)
-			break
+}
+
+func findCrossing(a, b []int) {
+	var l []int
+	for _, j := range a {
+		for _, k := range b {
+			if k == j {
+				l = append(l, k)
+			}
 		}
 
 	}
+	fmt.Println(l[0])
 }
 
 func main() {
 	var n, m river
-	n.number = 1
-	m.number = 7
-	compare(m, n)
-	/*
-		var intVar = 123
-		var rightMost, tempIntVar int
-		var byteArray []byte
-		tempIntVar = intVar
+	c := make(chan []int, 2)
 
-		// get the list of digits that make a number
-		for {
-			rightMost = tempIntVar % 10
-			// append right most int to begining of list
-			byteArray = append(byteArray, byte(rightMost))
-			// take off last processed number
-			tempIntVar /= 10
-			if tempIntVar == 0 {
-				break
-			}
-		}
+	n.number = 1158
+	m.number = 2085
 
-		// add up the numbers that make up intvar
-		fmt.Println(byteArray)
-		var k byte = 0
-		for _, j := range byteArray {
-			k += j
-		}
+	go m.riverGuide(c)
+	go n.riverGuide(c)
 
-	*/
+	a, b := <-c, <-c
+
+	fmt.Println(a)
+	fmt.Println(b)
+	findCrossing(a, b)
 
 }
