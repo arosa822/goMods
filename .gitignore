@@ -2,3 +2,5 @@ challenges/
 *.swp.go.swp
 *.main.go.swp
 switch/
+.*.swp
+*.*.sp
